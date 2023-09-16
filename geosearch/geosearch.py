@@ -4,7 +4,7 @@ from django.conf import settings
 from redis import StrictRedis
 
 
-class GeoSearch:
+class GeoSearch(object):
     user_id: int
     location: tuple
     timer: Timer  # threading
@@ -13,14 +13,41 @@ class GeoSearch:
                         port=settings.REDIS_PORT)
     items = {}  # user_id: GeoSearch()
 
-    def __init__(self, user_id, location):
-        self.user_id = user_id
+    def __new__(cls, user_id, location):
 
+        if user_id in cls.items:
+            cls.items[user_id].set_location(location)
+            return cls.items[user_id]
+
+        instance = super().__new__(cls) # это теперь self
+
+        instance.user_id = user_id
+        instance.set_location(location)
+
+        return instance
+
+    def set_location(self, location):
+        self.validate_location(location)
+        self.location = (str(location[0]), str(location[1]))
+
+        print((settings.REDIS_GEOPOS_NAME,
+                          (*self.location, self.user_id)))
+
+        self.redis.geoadd(settings.REDIS_GEOPOS_NAME,
+                          (*self.location, self.user_id))
+        # self.redis.save()
+
+    def validate_location(self, location):
         if -90 > location[1] or location[1] > 90:
             raise ValueError('Широта дОлжна быть в пределах -90:90')
         if -180 > location[0] or location[0] > 180:
             raise ValueError('Долгота должна быть в пределах -180:180')
 
-        self.location = location
+        return True
 
+    def __getitem__(self, item):
+        return self.redis.georadiusbymember(settings.REDIS_GEOPOS_NAME,
+                                            self.user_id,
+                                            item,
+                                            settings.REDIS_UNITS)
 

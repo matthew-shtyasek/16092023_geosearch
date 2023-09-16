@@ -1,0 +1,16 @@
+{% extends 'root.html' %}
+{% block content %}
+    <form action="." method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Отправить">
+    </form>
+    <form action="." method="get" class="get-rad">
+        {% csrf_token %}
+        <p>
+            <label for="rad-1">Введите радиус</label>
+            <input type="number" id="rad-1">
+        </p>
+            <input type="submit" value="Отправить">
+    </form>
+{% endblock %}

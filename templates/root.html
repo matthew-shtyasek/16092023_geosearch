@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title|default:'Геосайт' }}</title>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ title|default:'Геосайт' }}</h1>
+    </div>
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

@@ -48,8 +48,12 @@ class GeoSearch(object):
 
     def __getitem__(self, item):
         item = float(item)
-        return self.redis.georadiusbymember(settings.REDIS_GEOPOS_NAME,
-                                            self.user_id,
-                                            item,
-                                            settings.REDIS_UNITS)
-
+        result = self.redis.georadiusbymember(settings.REDIS_GEOPOS_NAME,
+                                              self.user_id,
+                                              item,
+                                              settings.REDIS_UNITS)
+        ids = list(map(int, result))
+        coordinates = self.redis.geopos(settings.REDIS_GEOPOS_NAME,
+                                        *ids)
+        print(coordinates)
+        return {id: coordinate for id, coordinate in zip(ids, coordinates)}

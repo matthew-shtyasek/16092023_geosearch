@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'root.html' %}
 
-</body>
-</html>
+{% block content %}
+    <p>Ваше имя: {{ user.username }}</p>
+    <div>
+        <h4>Ближайшие к вам пользователи:</h4>
+        {% for user in users %}
+            <p>{{ user.login }}</p>
+            <p>Широта: {{ user.latitude|floatformat:4 }}</p>
+            <p>Долгота: {{ user.longitude|floatformat:4 }}</p>
+            <br>
+        {% empty %}
+            <h5>Таких нет</h5>
+        {% endfor %}
+    </div>
+{% endblock %}

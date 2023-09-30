@@ -1,6 +1,7 @@
 from http.client import HTTPException
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -47,12 +48,22 @@ class CoordinateFormView(LoginRequiredMixin, FormView):
 
 
 class GeoSearchView(View):
+    template_name = 'geosearch/nearest_users.html'
+
     def get(self, request, *args, **kwargs):
         print(123)
         if request.user.id not in GeoSearch.items:
             raise HTTPException(428)
         nearest_users = GeoSearch.items[request.user.id][request.GET.get('radius')]
-        print(nearest_users)
-        print(123)
+        users = User.objects.filter(pk__in=list(nearest_users.keys()))
 
-        return JsonResponse({})
+        users = [{'id': user.id,
+                  'login': user.username,
+                  'latitude': nearest_users[user.id][0],
+                  'longitude': nearest_users[user.id][1]}
+                 for user in users
+                 if request.user.id != user.id]
+
+
+        context = {'users': users}
+        return render(request, self.template_name, context)

@@ -1,9 +1,57 @@
 {% extends "root.html" %}
+{% block js %}
+    <script>
+        $(document).ready(function (){
+            authorization();
+        });
+        function authorization(){
+            const form = $('#form');
+            form.submit(function (e){
+                e.preventDefault()
+                console.log(form.serialize())
+            $.ajax({
+                url:'/auth/login/',
+                method: 'post',
+                dataType: 'json',
+                data: form.serialize(),
+                success: function (data){
+                    $(location).attr("href", data.address)
+                },
+                error: function (XMLHttpRequest, TextStatus, ErrorThrown){
+                    const p = $('.error')
+                    const newP = $('<p>', {class: 'error', text: 'Вы ввели что-то неправильно'});
+                    const div = $('.auth-form');
+                    if (div.find(p).length){
+                        div.removeChild(p)
+                    }
+                    div[0].append(newP[0]);
+                    console.log(newP);
 
+                }
+            })
+            })
+            /*form.ajaxSend({
+                url:'/auth/login',
+                method: 'post',
+                success: function (data){
+                    $.redirect('/geo/setcoord')
+                },
+                error: function (data){
+
+                    const div = $('.auth-form')[0];
+                    div.innerHTML+='<p>Вы что-то ввели неверно</p>';
+                }
+            });*/
+
+        }
+    </script>
+{% endblock %}
 {% block content %}
-    <form action="." method="post">
+    <div class="auth-form">
+    <form action="." method="post" class="form" id="form">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="{{ button_name|default:'Войти' }}">
     </form>
+    </div>
 {% endblock %}

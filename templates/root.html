@@ -1,8 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{ title|default:'Геосайт' }}</title>
+    <script src="{% static 'js/jquery.js'%}" ></script>
+    {% block js %}
+
+    {% endblock %}
 </head>
 <body>
     <div class="header">

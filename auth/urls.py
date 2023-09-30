@@ -12,5 +12,6 @@ urlpatterns = [
     path('sign-up/', CreateView.as_view(form_class=UserCreationForm,
                                         template_name='registration/auth.html',
                                         success_url=reverse_lazy('auth:login'),
-                                        extra_context={'button_name': 'Регистрация'})),
+                                        extra_context={'button_name': 'Регистрация',
+                                                       'form_id': 'register-form'})),
 ]

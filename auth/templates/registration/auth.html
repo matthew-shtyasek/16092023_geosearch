@@ -55,7 +55,7 @@
 {% endblock %}
 {% block content %}
     <div class="auth-form">
-    <form action="." method="post" class="form" id="form">
+    <form action="." method="post" class="form" id="{{ form_id|default:'form' }}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="{{ button_name|default:'Войти' }}">

@@ -22,6 +22,7 @@ class GeoSearch(object):
         instance = super().__new__(cls) # это теперь self
 
         instance.user_id = user_id
+        cls.items[user_id] = instance
         instance.set_location(location)
 
         return instance
@@ -46,6 +47,7 @@ class GeoSearch(object):
         return True
 
     def __getitem__(self, item):
+        item = float(item)
         return self.redis.georadiusbymember(settings.REDIS_GEOPOS_NAME,
                                             self.user_id,
                                             item,

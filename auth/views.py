@@ -1,6 +1,6 @@
 from http.client import HTTPException
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied
@@ -30,6 +30,7 @@ class CustomLoginView(LoginView):
         cd = form.cleaned_data
         user = authenticate(self.request, **cd)
         if user is not None:
+            login(self.request, user)
             return JsonResponse({'address': self.success_url})
         return HttpResponse('Unauthorized', status=401)
         #return JsonResponse({'description': 'Unauthorized'}, status=401)

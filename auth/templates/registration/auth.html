@@ -8,14 +8,22 @@
             const form = $('#form');
             form.submit(function (e){
                 e.preventDefault()
-                console.log(form.serialize())
             $.ajax({
                 url:'/auth/login/',
                 method: 'post',
                 dataType: 'json',
                 data: form.serialize(),
                 success: function (data){
-                    $(location).attr("href", data.address)
+                    let currentAddress = $(location).attr('href');
+                    //  localhost:8000/auth/login/?param1=1&next=/geo/setcoord/&param2=123
+                    let splitAddress = currentAddress.split('next=');
+                    let redirectAddress = data.address;
+
+                    if (splitAddress.length > 1) {
+                        redirectAddress = splitAddress[1].split('&')[0];
+                    }
+
+                    $(location).attr("href", redirectAddress);
                 },
                 error: function (XMLHttpRequest, TextStatus, ErrorThrown){
                     const p = $('.error')
@@ -25,7 +33,6 @@
                         div.removeChild(p)
                     }
                     div[0].append(newP[0]);
-                    console.log(newP);
 
                 }
             })

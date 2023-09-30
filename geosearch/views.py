@@ -1,5 +1,6 @@
 from http.client import HTTPException
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -12,7 +13,7 @@ from geosearch.forms import CoordinatesForm
 from geosearch.geosearch import GeoSearch
 
 
-class CoordinateFormView(FormView):
+class CoordinateFormView(LoginRequiredMixin, FormView):
     template_name = 'geosearch/index.html'
     form_class = CoordinatesForm
     success_url = reverse_lazy('geo:setcoord')

@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.urls import reverse_lazy
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -134,3 +136,5 @@ REDIS_PORT = 6379
 
 REDIS_GEOPOS_NAME = 'users:geopos'
 REDIS_UNITS = 'km'
+
+LOGIN_URL = reverse_lazy('auth:login')
